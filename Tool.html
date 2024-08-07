@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Days without being a tool</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+            background-image: url('https://raw.githubusercontent.com/Thomazzo91/Days-Without-being-a-tool/main/377333132_3425451404432558_2414920119016785012_n.jpg'); /* Ny bakgrundsbild */
+            background-size: contain; /* Bilden fyller hela bakgrunden utan att beskäras */
+            background-position: center; /* Centrerad bild */
+            background-repeat: no-repeat; /* Ingen upprepning av bilden */
+            background-color: #f4f4f4; /* Bakgrundsfärg som visas runt bilden om det finns tomt utrymme */
+            color: #fff; /* Textfärg för att kontrastera med bakgrunden */
+        }
+
+        #title {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        #counter {
+            font-size: 2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="title">Days without being a tool</div>
+    <div id="counter"></div>
+
+    <script>
+        const startDate = new Date(); // Startar från dagens datum
+
+        const updateCounter = () => {
+            const now = new Date();
+            const timeDifference = now - startDate;
+            const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60)) % 24;
+            document.getElementById('counter').innerText = `${daysDifference} dagar och ${hoursDifference} timmar`;
+        };
+        
+        // Uppdatera räknaren omedelbart och varje timme
+        updateCounter();
+        setInterval(updateCounter, 60 * 60 * 1000); // Uppdatera varje timme
+    </script>
+
+</body>
+</html>
