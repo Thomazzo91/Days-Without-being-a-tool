@@ -401,7 +401,7 @@ WHERE p.FinishTime IS NOT NULL;
                     <td>${p.name}</td>
                     <td>${waveName(p.planned)}</td>
                     <td>${status}</td>
-                    <td>${p.actual ? waveName(p.actual) : (p.start == null ? "—" : "väntar till mål")}</td>
+                    <td>${p.actual ? waveName(p.actual) : (p.finish != null ? "okänd våg" : p.start == null ? "—" : "väntar till mål")}</td>
                     <td>${fmtSpan(netto)}</td>
                     <td>${fmtSpan(gun)}</td>
                     <td>${startBtn}${finishBtn}</td>
