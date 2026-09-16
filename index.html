@@ -5,56 +5,457 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Days without being a tool</title>
     <style>
+        :root {
+            --ink: #111;
+            --paper: rgba(18, 18, 18, 0.88);
+            --yellow: #f5c518;
+            --ok: #7dffa3;
+            --warn: #ffb020;
+            --bad: #ff6b6b;
+            --muted: #c8c8c8;
+        }
+
         html, body {
             margin: 0;
             padding: 0;
-            height: 100%;
-            width: 100%;
+            min-height: 100%;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #fff;
+            background-color: #1a1a1a;
+            background-image: url("377333132_3425451404432558_2414920119016785012_n.jpg");
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .wrap {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 28px 16px 64px;
+        }
+
+        .board {
+            background: var(--paper);
+            border: 4px solid var(--yellow);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+            padding: 22px 22px 28px;
+        }
+
+        .stripe {
+            background: var(--yellow);
+            color: #111;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
             text-align: center;
-            padding-top: 50px;
-            background-image: url('https://raw.githubusercontent.com/Thomazzo91/Days-Without-being-a-tool/main/377333132_3425451404432558_2414920119016785012_n.jpg'); /* Ny bakgrundsbild */
-            background-size: contain; /* Bilden fyller hela bakgrunden utan att beskäras */
-            background-position: center; /* Centrerad bild */
-            background-repeat: no-repeat; /* Ingen upprepning av bilden */
-            background-color: #f4f4f4; /* Bakgrundsfärg som visas runt bilden om det finns tomt utrymme */
-            color: #fff; /* Textfärg för att kontrastera med bakgrunden */
+            padding: 8px 10px;
+            margin: -22px -22px 18px;
+            font-size: 0.82em;
         }
 
-        #title {
-            font-size: 2em;
-            margin-bottom: 20px;
+        h1 {
+            margin: 0 0 8px;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            text-align: center;
         }
 
-        #counter {
-            font-size: 2em;
-            font-weight: bold;
+        .big {
+            font-size: clamp(4rem, 14vw, 7rem);
+            line-height: 0.9;
+            font-weight: 800;
+            text-align: center;
+            color: var(--yellow);
+            margin: 10px 0 6px;
+        }
+
+        .sub {
+            text-align: center;
+            font-size: 1.15rem;
+            margin-bottom: 22px;
+        }
+
+        h2 {
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--yellow);
+            margin: 28px 0 10px;
+        }
+
+        p, li, td, th, label {
+            font-size: 0.98rem;
+            line-height: 1.45;
+        }
+
+        .muted { color: var(--muted); }
+
+        .incident {
+            border-left: 4px solid var(--bad);
+            padding: 8px 0 8px 14px;
+            background: rgba(255, 107, 107, 0.08);
+        }
+
+        .quote {
+            font-style: italic;
+            color: #f3f3f3;
+        }
+
+        .answer {
+            background: rgba(125, 255, 163, 0.08);
+            border-left: 4px solid var(--ok);
+            padding: 10px 14px;
+            margin: 12px 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .grid { grid-template-columns: 1fr; }
+            body { background-attachment: scroll; }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 7px 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            vertical-align: top;
+        }
+
+        th { color: var(--yellow); font-weight: 700; }
+
+        button, select {
+            font: inherit;
+            cursor: pointer;
+        }
+
+        button {
+            background: var(--yellow);
+            color: #111;
+            border: 0;
+            font-weight: 700;
+            padding: 6px 10px;
+            margin: 0 4px 4px 0;
+        }
+
+        button.ghost {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .clock {
+            font-variant-numeric: tabular-nums;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--yellow);
+        }
+
+        .status-ok { color: var(--ok); font-weight: 700; }
+        .status-no { color: var(--warn); font-weight: 700; }
+        .status-fin { color: #9ecbff; font-weight: 700; }
+
+        pre {
+            overflow: auto;
+            background: #0b0b0b;
+            color: #d7ffd7;
+            padding: 12px;
+            font-size: 0.78rem;
+            line-height: 1.4;
+        }
+
+        details {
+            margin-top: 8px;
+        }
+
+        summary {
+            cursor: pointer;
+            color: var(--yellow);
+            font-weight: 700;
         }
     </style>
 </head>
 <body>
+    <div class="wrap">
+        <section class="board">
+            <div class="stripe">Workplace incident board · SkolM SQL 0016</div>
+            <h1>Days without being a tool</h1>
+            <div class="big" id="days">0</div>
+            <div class="sub" id="counter">0 dagar, 0 timmar och 0 minuter</div>
 
-    <div id="title">Days without being a tool</div>
-    <div id="counter"></div>
+            <h2>Senaste incident</h2>
+            <div class="incident">
+                <p><strong>16 september 2026 · SQL-databas 0016 (SkolM)</strong></p>
+                <p class="quote">
+                    Chefen har kommit fram till att deltagarna vanligtvis inte startar i
+                    den wave de borde, så vi ska bara startregistrera dem och när de gått
+                    i mål placerar vi dem i rätt wave. Jag vet inte hur man gör detta på
+                    loppdagen. Vet inte ens om det ska vara guntime eller netto.
+                    Hur ser jag vilka som har startat och inte. Så många frågetecken.
+                </p>
+                <p class="muted">Streaken är bruten. Räknaren startar om från den här frågan.</p>
+            </div>
+
+            <h2>Svaret, utan frågetecken</h2>
+            <div class="answer">
+                <p>
+                    <strong>Använd netto.</strong> Startmattan är klockan.
+                    Wave är bara en etikett för vilken startgrupp de faktiskt gick ut med —
+                    den sätts efter att starttiden finns, oftast i samband med mål.
+                    Gun time används bara om ni saknar startmatta, eller om placering
+                    uttryckligen ska vara brutto från pistolskottet.
+                </p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <p><strong>Netto (chip / startmatta)</strong></p>
+                    <p>Mål minus <em>personens</em> startpassering. Rättvis tid även om någon står långt bak eller hoppar wave.</p>
+                </div>
+                <div class="card">
+                    <p><strong>Gun (brutto)</strong></p>
+                    <p>Mål minus <em>vågens</em> pistol. Fel om de inte startade i den våg de var seedade i. Därför ska vågen rättas till den de faktiskt startade i.</p>
+                </div>
+            </div>
+
+            <h2>Loppdagen i databas 0016</h2>
+            <ol>
+                <li>Seedade vågor får stå kvar som plan, men de får inte styra tiden.</li>
+                <li>Vid start: bara <strong>startregistrera</strong> (skriv starttid från mattan). Ingen vågflytt ännu.</li>
+                <li>Vid mål: spara måltid. Räkna netto = mål − start.</li>
+                <li>Lägg personen i den våg vars gun-tid är den senaste som fortfarande är ≤ starttiden. Sen ankomst till sista vågen stannar i sista vågen.</li>
+                <li>Gun time, om ni visar den, räknas mot <em>faktisk</em> våg — aldrig mot den seedade.</li>
+            </ol>
+            <p class="muted">
+                Start före första pistol = flagga som manuell. Mål utan start = missad startmatta, inte DNS.
+            </p>
+
+            <h2>Mini-lopp · prova flödet</h2>
+            <p>
+                Klocka: <span class="clock" id="raceClock">09:55:00</span>
+                <button type="button" id="plus1">+1 min</button>
+                <button type="button" id="plus5">+5 min</button>
+                <button type="button" id="plus15">+15 min</button>
+                <button type="button" class="ghost" id="resetDemo">Nollställ demo</button>
+            </p>
+            <p class="muted">Wave 1 gun 10:00 · Wave 2 gun 10:15 · Wave 3 gun 10:30. Starta fel våg med flit — målgången rättar etiketten.</p>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nr</th>
+                            <th>Namn</th>
+                            <th>Seedad</th>
+                            <th>Status</th>
+                            <th>Faktisk våg</th>
+                            <th>Netto</th>
+                            <th>Gun</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows"></tbody>
+                </table>
+            </div>
+            <p id="startedSummary"></p>
+
+            <h2>SQL · vilka har startat?</h2>
+            <p>Kör mot SkolM-databas <strong>0016</strong>. Byt tabellnamn om er schema skiljer sig, logiken är densamma.</p>
+            <details open>
+                <summary>Frågor att klistra in</summary>
+<pre>-- Startade (har startregistrering)
+SELECT Bib, Name, StartTime, PlannedWaveId, ActualWaveId
+FROM Participants
+WHERE StartTime IS NOT NULL
+ORDER BY StartTime;
+
+-- Inte startade (DNS om de heller inte har mål)
+SELECT Bib, Name, PlannedWaveId
+FROM Participants
+WHERE StartTime IS NULL
+  AND FinishTime IS NULL;
+
+-- På banan / DNF-kandidater
+SELECT Bib, Name, StartTime
+FROM Participants
+WHERE StartTime IS NOT NULL
+  AND FinishTime IS NULL;
+
+-- Mål utan start (missad startmatta)
+SELECT Bib, Name, FinishTime
+FROM Participants
+WHERE StartTime IS NULL
+  AND FinishTime IS NOT NULL;
+
+-- Efter mål: lägg i rätt wave utifrån faktisk start
+UPDATE p
+SET ActualWaveId = w.WaveId
+FROM Participants AS p
+CROSS APPLY (
+    SELECT TOP (1) WaveId
+    FROM Waves
+    WHERE GunTime &lt;= p.StartTime
+    ORDER BY GunTime DESC
+) AS w
+WHERE p.StartTime IS NOT NULL;
+
+-- Tider mot faktisk våg
+SELECT
+    p.Bib,
+    p.Name,
+    p.ActualWaveId,
+    p.StartTime,
+    p.FinishTime,
+    DATEDIFF(second, p.StartTime, p.FinishTime) AS NettoSek,
+    DATEDIFF(second, w.GunTime, p.FinishTime) AS GunSek
+FROM Participants AS p
+LEFT JOIN Waves AS w ON w.WaveId = p.ActualWaveId
+WHERE p.FinishTime IS NOT NULL;
+</pre>
+            </details>
+        </section>
+    </div>
 
     <script>
-        const startDate = new Date(); // Startar från dagens datum
+        const LAST_INCIDENT_AT = "2026-09-16T14:13:00+02:00";
+
+        const pad = (n) => String(n).padStart(2, "0");
+        const toClock = (mins) => {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            return pad(h) + ":" + pad(m) + ":00";
+        };
+        const clockToMin = (hhmmss) => {
+            const [h, m] = hhmmss.split(":").map(Number);
+            return h * 60 + m;
+        };
+        const fmtSpan = (mins) => {
+            if (mins == null || mins < 0) return "—";
+            return pad(Math.floor(mins / 60)) + ":" + pad(mins % 60);
+        };
+
+        const WAVES = [
+            { id: 1, name: "Wave 1", gun: 10 * 60 },
+            { id: 2, name: "Wave 2", gun: 10 * 60 + 15 },
+            { id: 3, name: "Wave 3", gun: 10 * 60 + 30 }
+        ];
+
+        const SEED = [
+            { bib: 101, name: "Anna", planned: 1 },
+            { bib: 216, name: "Erik", planned: 2 },
+            { bib: 305, name: "Moa", planned: 3 },
+            { bib: 118, name: "Omar", planned: 1 },
+            { bib: 16, name: "Kim", planned: 2 }
+        ];
+
+        let raceMin = 9 * 60 + 55;
+        let people = SEED.map((p) => ({ ...p, start: null, finish: null, actual: null }));
+
+        function assignWave(startMin) {
+            const match = [...WAVES].reverse().find((w) => w.gun <= startMin);
+            return match ? match.id : null;
+        }
+
+        function waveName(id) {
+            const w = WAVES.find((x) => x.id === id);
+            return w ? w.name : "—";
+        }
+
+        function renderRows() {
+            document.getElementById("raceClock").textContent = toClock(raceMin);
+            const body = document.getElementById("rows");
+            body.innerHTML = people.map((p, i) => {
+                let status = '<span class="status-no">Inte startat</span>';
+                if (p.start != null && p.finish == null) status = '<span class="status-ok">Startad</span>';
+                if (p.finish != null) status = '<span class="status-fin">I mål</span>';
+                const netto = p.start != null && p.finish != null ? p.finish - p.start : null;
+                const gun = p.actual && p.finish != null
+                    ? p.finish - WAVES.find((w) => w.id === p.actual).gun
+                    : null;
+                const startBtn = p.start == null
+                    ? `<button type="button" data-act="start" data-i="${i}">Starta nu</button>`
+                    : "";
+                const finishBtn = p.start != null && p.finish == null
+                    ? `<button type="button" data-act="finish" data-i="${i}">Målgång</button>`
+                    : "";
+                return `<tr>
+                    <td>${p.bib}</td>
+                    <td>${p.name}</td>
+                    <td>${waveName(p.planned)}</td>
+                    <td>${status}</td>
+                    <td>${p.actual ? waveName(p.actual) : (p.start == null ? "—" : "väntar till mål")}</td>
+                    <td>${fmtSpan(netto)}</td>
+                    <td>${fmtSpan(gun)}</td>
+                    <td>${startBtn}${finishBtn}</td>
+                </tr>`;
+            }).join("");
+
+            const started = people.filter((p) => p.start != null).length;
+            const notStarted = people.length - started;
+            const finished = people.filter((p) => p.finish != null).length;
+            document.getElementById("startedSummary").innerHTML =
+                `<strong>${started} startade</strong>, ${notStarted} har inte startat, ${finished} i mål. ` +
+                `Det är så ni ser det i 0016: <code>StartTime IS NOT NULL</code>.`;
+        }
+
+        document.getElementById("rows").addEventListener("click", (e) => {
+            const btn = e.target.closest("button");
+            if (!btn) return;
+            const i = Number(btn.dataset.i);
+            const p = people[i];
+            if (btn.dataset.act === "start") {
+                p.start = raceMin;
+                p.actual = null;
+            }
+            if (btn.dataset.act === "finish") {
+                p.finish = Math.max(raceMin, p.start + 1);
+                p.actual = assignWave(p.start);
+            }
+            renderRows();
+        });
+
+        document.getElementById("plus1").onclick = () => { raceMin += 1; renderRows(); };
+        document.getElementById("plus5").onclick = () => { raceMin += 5; renderRows(); };
+        document.getElementById("plus15").onclick = () => { raceMin += 15; renderRows(); };
+        document.getElementById("resetDemo").onclick = () => {
+            raceMin = 9 * 60 + 55;
+            people = SEED.map((p) => ({ ...p, start: null, finish: null, actual: null }));
+            renderRows();
+        };
 
         const updateCounter = () => {
+            const startDate = new Date(LAST_INCIDENT_AT);
             const now = new Date();
-            const timeDifference = now - startDate;
-            const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-            const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60)) % 24;
-            document.getElementById('counter').innerText = `${daysDifference} dagar och ${hoursDifference} timmar`;
+            const ms = Math.max(0, now - startDate);
+            const days = Math.floor(ms / 86400000);
+            const hours = Math.floor(ms / 3600000) % 24;
+            const minutes = Math.floor(ms / 60000) % 60;
+            document.getElementById("days").innerText = String(days);
+            document.getElementById("counter").innerText =
+                `${days} dagar, ${hours} timmar och ${minutes} minuter`;
         };
-        
-        // Uppdatera räknaren omedelbart och varje timme
-        updateCounter();
-        setInterval(updateCounter, 60 * 60 * 1000); // Uppdatera varje timme
-    </script>
 
+        updateCounter();
+        setInterval(updateCounter, 30000);
+        renderRows();
+    </script>
 </body>
 </html>
